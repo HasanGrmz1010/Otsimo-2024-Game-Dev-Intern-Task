@@ -7,6 +7,9 @@ using static System.Net.WebRequestMethods;
 
 public class BucketHandler : MonoBehaviour
 {
+    [SerializeField] GameObject canvasPlane;
+    [SerializeField] Transform canvasItemHolder;
+
     [SerializeField] FlexibleColorPicker FCP;
     [SerializeField] Camera mainCam;
 
@@ -20,29 +23,28 @@ public class BucketHandler : MonoBehaviour
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    
-                    break;
-
-                case TouchPhase.Moved:
-                    
-                    break;
-
-                case TouchPhase.Stationary:
-                    break;
-
-                case TouchPhase.Ended:
                     GameObject currentClickedObj = EventSystem.current.currentSelectedGameObject;
                     if (currentClickedObj == null)
                     {
                         canFillCanvas = true;
                     }
-                    else if (currentClickedObj.TryGetComponent<Button>(out Button but)) { canFillCanvas = false; return; }
+                    else if (currentClickedObj.TryGetComponent<Button>(out Button but))
+                    {
+                        canFillCanvas = false; return;
+                    }
                     else canFillCanvas = true;
-
-                    mainCam.backgroundColor = FCP.color;
                     break;
 
-                case TouchPhase.Canceled:
+                case TouchPhase.Ended:
+                    if (canFillCanvas)
+                    {
+                        foreach (Transform item in SaveManager.instance.canvasItemHolder.transform)
+                        {
+                            Destroy(item.gameObject);
+                        }
+                        canvasPlane.GetComponent<MeshRenderer>().material.color = FCP.color;
+                        GameManager.instance.canvasLayerCounter = 1;
+                    }
                     break;
 
                 default:

@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CanvasPlane
+  - AmmoPool
+  - CanvasHolder
+  - line_eraser
+  - line_pen
+  - stamp
+  - splash
   layers:
   - Default
   - TransparentFX
@@ -11,7 +18,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Canvas
   - 
   - 
   - 

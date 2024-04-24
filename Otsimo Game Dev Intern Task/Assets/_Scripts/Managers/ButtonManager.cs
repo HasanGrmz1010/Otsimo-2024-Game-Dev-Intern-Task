@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Unity.VisualScripting;
 using System;
+using static System.Net.WebRequestMethods;
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class ButtonManager : MonoBehaviour
 {
@@ -21,7 +24,7 @@ public class ButtonManager : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            //DontDestroyOnLoad(this.gameObject);
         }
     }
     #endregion
@@ -29,32 +32,65 @@ public class ButtonManager : MonoBehaviour
     public static Action onAnyMenuOpened;
     public static Action onAllMenusClosed;
 
+    [SerializeField] gameData gameData;
     [SerializeField] LineGenerator lineGenerator;
-    [SerializeField] Transform canvasItemHolder;
+    //[SerializeField] Transform canvasItemHolder;
+    [SerializeField] GameObject canvasPlane;
     [SerializeField] Camera mainCam;
 
     [SerializeField] List<Sprite> tool_images = new List<Sprite>();
     [SerializeField] List<RectTransform> toolButtons = new List<RectTransform>();
-    
+
+    public List<Canvas> canvases = new List<Canvas>();
     [SerializeField] RectTransform colorPicker;
     [SerializeField] Image currentTool_img;
+    [SerializeField] Image fade_img;
+    [SerializeField] TextMeshProUGUI greet_text;
 
-    [Header("======= BUTTONS) =======")]
+    [Header("-------------- BUTTONS) --------------")]
+    [SerializeField] Button saveCanvasButton;
+    [SerializeField] Button projectileButton;
     [SerializeField] Button cleanCanvasButton;
     [SerializeField] Button toolMenuButton;
     [SerializeField] Button colorWheelButton;
+    [Header("-------------------------------------------------------------")]
+    [SerializeField] Button newCanvasButton;
+    [SerializeField] Button exitGameButton;
 
     bool toolMenu_status = false, colorWheel_status = false;
 
     private void Start()
     {
-        toolMenuButton.onClick.AddListener(Button_ToolChooseMenu);
-        colorWheelButton.onClick.AddListener(Button_ColorWheelMenu);
-        cleanCanvasButton.onClick.AddListener(Button_CleanCanvas);
+        fade_img.DOFade(0f, 3f).OnComplete(() =>
+        {
+            if (!gameData.hasDrawn)
+            {
+                fade_img.gameObject.SetActive(false);
+                greet_text.gameObject.SetActive(false);
+                newCanvasButton.gameObject.SetActive(true);
+                exitGameButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                SaveManager.instance.LoadSavedCanvas();
+                fade_img.gameObject.SetActive(true);
+                fade_img.DOFade(1f, .5f).OnComplete(() =>
+                {
+                    canvases[0].gameObject.SetActive(true);
+                    canvases[1].gameObject.SetActive(false);
+                    mainCam.transform.DORotate(Vector3.zero, .1f, RotateMode.FastBeyond360);
+                    fade_img.DOFade(0f, .25f).OnComplete(() =>
+                    {
+                        fade_img.gameObject.SetActive(false);
+                        GameManager.instance.state = GameManager.State.paint;
+                    });
+                });
+            }
+        });
     }
 
-    #region Canvas Button Functions
-    public void Button_ToolChooseMenu()
+    #region Paint Canvas Button Functions
+    public void P_Button_ToolChooseMenu()
     {
         toolMenuButton.interactable = false;
         toolMenuButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
@@ -98,9 +134,9 @@ public class ButtonManager : MonoBehaviour
         }
     }
 
-    public void Button_ColorWheelMenu()
+    public void P_Button_ColorWheelMenu()
     {
-        if ((GameManager.instance.mode == GameManager.Mode.pen || GameManager.instance.mode == GameManager.Mode.bucket))
+        if ((GameManager.instance.mode == GameManager.Mode.pen || GameManager.instance.mode == GameManager.Mode.bucket || GameManager.instance.mode == GameManager.Mode.projectile))
         {
             colorWheelButton.interactable = false;
             colorWheelButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
@@ -134,7 +170,7 @@ public class ButtonManager : MonoBehaviour
 
     }
 
-    public void Button_CleanCanvas()
+    public void P_Button_CleanCanvas()
     {
         onAnyMenuOpened();
         cleanCanvasButton.interactable = false;
@@ -144,35 +180,55 @@ public class ButtonManager : MonoBehaviour
             if (!toolMenu_status && !colorWheel_status)
                 onAllMenusClosed();
         });
-        foreach (Transform item in canvasItemHolder.transform)
+        foreach (Transform item in SaveManager.instance.canvasItemHolder.transform)
         {
             Destroy(item.gameObject);
         }
-        mainCam.backgroundColor = Color.white;
+        canvasPlane.GetComponent<MeshRenderer>().material.color = Color.white;
+        GameManager.instance.canvasLayerCounter = 1;
         lineGenerator.SetLineGenerating(true);
     }
 
-    public void Button_Tool(string _tag)
+    public void P_Button_SaveCanvas()
     {
+        SaveManager.instance.SaveCurrentCanvas();
+    }
 
+    public void P_Button_Projectile()
+    {
+        GameManager.instance.mode = GameManager.Mode.projectile;
+        if (!toolMenu_status && !colorWheel_status) onAllMenusClosed();
+    }
+
+    public void P_Button_Tool(string _tag)
+    {
+        GameObject currentClickedObj;
         switch (_tag)
         {
             case "pen":
+                currentClickedObj = EventSystem.current.currentSelectedGameObject;
+                currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[0];
                 GameManager.instance.mode = GameManager.Mode.pen;
                 break;
 
             case "bucket":
+                currentClickedObj = EventSystem.current.currentSelectedGameObject;
+                currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[1];
                 GameManager.instance.mode = GameManager.Mode.bucket;
                 break;
 
             case "stamp":
+                currentClickedObj = EventSystem.current.currentSelectedGameObject;
+                currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[2];
                 GameManager.instance.mode = GameManager.Mode.stamp;
                 break;
 
             case "eraser":
+                currentClickedObj = EventSystem.current.currentSelectedGameObject;
+                currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[3];
                 GameManager.instance.mode = GameManager.Mode.eraser;
                 break;
@@ -183,12 +239,52 @@ public class ButtonManager : MonoBehaviour
     }
     #endregion
 
-    
+    #region Menu Canvas Button Functions
+    void M_Button_NewCanvasButton()
+    {
+        gameData.hasDrawn = true;
+        fade_img.gameObject.SetActive(true);
+        fade_img.DOFade(1f, .5f).OnComplete(() =>
+        {
+            canvases[0].gameObject.SetActive(true);
+            canvases[1].gameObject.SetActive(false);
+            mainCam.transform.DORotate(Vector3.zero, .1f, RotateMode.FastBeyond360);
+            fade_img.DOFade(0f, .25f).OnComplete(() =>
+            {
+                fade_img.gameObject.SetActive(false);
+                GameManager.instance.state = GameManager.State.paint;
+            });
+        });
+        
+    }
+
+    void M_ExitGameButton()
+    {
+        Application.Quit();
+    }
+    #endregion
+
+    private void OnEnable()
+    {
+        toolMenuButton.onClick.AddListener(P_Button_ToolChooseMenu);
+        colorWheelButton.onClick.AddListener(P_Button_ColorWheelMenu);
+        cleanCanvasButton.onClick.AddListener(P_Button_CleanCanvas);
+        projectileButton.onClick.AddListener(P_Button_Projectile);
+        saveCanvasButton.onClick.AddListener(P_Button_SaveCanvas);
+
+        newCanvasButton.onClick.AddListener(M_Button_NewCanvasButton);
+        exitGameButton.onClick.AddListener(M_ExitGameButton);
+    }
 
     private void OnDisable()
     {
         toolMenuButton.onClick.RemoveAllListeners();
         colorWheelButton.onClick.RemoveAllListeners();
         cleanCanvasButton.onClick.RemoveAllListeners();
+        projectileButton.onClick.RemoveAllListeners();
+        saveCanvasButton.onClick.RemoveAllListeners();
+
+        newCanvasButton.onClick.RemoveAllListeners();
+        exitGameButton.onClick.RemoveAllListeners();
     }
 }

@@ -10,25 +10,25 @@ public class LineGenerator : MonoBehaviour
 
     [SerializeField] GameObject linePrefab;
     [SerializeField] GameObject eraserPrefab;
-    [SerializeField] Transform canvasItemHolder;
+    //[SerializeField] Transform canvasItemHolder;
     [SerializeField] Camera mainCam;
 
     Line activeLine;
     [SerializeField] Material activeColor;
 
     bool canGenerateLines, canErase;
-    int currentSortingLayer;
     private void Start()
     {
         canGenerateLines = true; canErase = true;
-        currentSortingLayer = 0;
     }
 
     void Update()
     {
-        PenDrawing_Handle();
-        Eraser_Handle();
-
+        if (GameManager.instance.state == GameManager.State.paint)
+        {
+            PenDrawing_Handle();
+            Eraser_Handle();
+        }
     }
 
     /*
@@ -51,9 +51,9 @@ public class LineGenerator : MonoBehaviour
                     else canGenerateLines = true;
 
                     activeColor.color = FCP.color;
-                    GameObject newLine = Instantiate(linePrefab, mainCam.ScreenToWorldPoint(touch.position), Quaternion.identity, canvasItemHolder);
-                    currentSortingLayer++;
-                    newLine.GetComponent<LineRenderer>().sortingOrder = currentSortingLayer;
+                    GameObject newLine = Instantiate(linePrefab, mainCam.ScreenToWorldPoint(touch.position), Quaternion.identity, SaveManager.instance.canvasItemHolder.transform);
+                    int layer = GameManager.instance.canvasLayerCounter++;
+                    newLine.GetComponent<LineRenderer>().sortingOrder = layer;
                     activeLine = newLine.GetComponent<Line>();
                     break;
 
@@ -62,18 +62,12 @@ public class LineGenerator : MonoBehaviour
                     activeLine.UpdateLine(movedPos);
                     break;
 
-                case TouchPhase.Stationary:
-                    break;
-
                 case TouchPhase.Ended:
                     if (canGenerateLines && activeLine != null)
                     {
                         activeLine.LockLineMaterial();
                         activeLine = null;
                     }
-                    break;
-
-                case TouchPhase.Canceled:
                     break;
 
                 default:
@@ -101,9 +95,9 @@ public class LineGenerator : MonoBehaviour
                     else if (currentClickedObj.TryGetComponent<Button>(out Button but)) { canErase = false; return; }
                     else canErase = true;
 
-                    GameObject newLine = Instantiate(eraserPrefab, mainCam.ScreenToWorldPoint(touch.position), Quaternion.identity, canvasItemHolder);
-                    currentSortingLayer++;
-                    newLine.GetComponent<LineRenderer>().sortingOrder = currentSortingLayer;
+                    GameObject newLine = Instantiate(eraserPrefab, mainCam.ScreenToWorldPoint(touch.position), Quaternion.identity, SaveManager.instance.canvasItemHolder.transform);
+                    int layer = GameManager.instance.canvasLayerCounter++;
+                    newLine.GetComponent<LineRenderer>().sortingOrder = layer;
                     activeLine = newLine.GetComponent<Line>();
                     break;
 

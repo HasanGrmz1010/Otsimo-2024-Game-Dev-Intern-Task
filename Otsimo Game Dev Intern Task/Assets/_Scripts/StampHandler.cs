@@ -8,7 +8,7 @@ public class StampHandler : MonoBehaviour
 {
     [SerializeField] Camera mainCam;
     [SerializeField] GameObject stampSprite;
-    [SerializeField] Transform canvasItemHolder;
+    //[SerializeField] Transform canvasItemHolder;
 
     bool canStamp = true;
     private void Update()
@@ -25,22 +25,14 @@ public class StampHandler : MonoBehaviour
                     else canStamp = true;
                     break;
 
-                case TouchPhase.Moved:
-                    
-                    break;
-
-                case TouchPhase.Stationary:
-                    break;
-
                 case TouchPhase.Ended:
                     if (canStamp)
                     {
-                        GameObject newSprite = Instantiate(stampSprite, mainCam.ScreenToWorldPoint(touch.position) + Vector3.forward, Quaternion.identity, canvasItemHolder);
-                        newSprite.transform.DOPunchScale(Vector3.one / 5, .2f, 1, .25f);
+                        GameObject newSprite = Instantiate(stampSprite, mainCam.ScreenToWorldPoint(touch.position) + Vector3.forward, Quaternion.identity, SaveManager.instance.canvasItemHolder.transform);
+                        int layer = GameManager.instance.canvasLayerCounter++;
+                        newSprite.GetComponent<SpriteRenderer>().sortingOrder = layer;
+                        newSprite.transform.DOPunchScale(Vector3.one / 10, .2f, 1, .25f);
                     }
-                    break;
-
-                case TouchPhase.Canceled:
                     break;
 
                 default:

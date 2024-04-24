@@ -261,8 +261,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: 
-  AndroidKeyaliasName: 
+  AndroidKeystoreName: '{dedicated}: Otsimo Task Key/user.keystore'
+  AndroidKeyaliasName: 31
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -270,7 +270,7 @@ PlayerSettings:
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
-  androidUseCustomKeystore: 0
+  androidUseCustomKeystore: 1
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -882,8 +882,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Otsimo Game Dev Intern Task
-  metroPackageVersion: 
+  metroPackageName: OtsimoGameDevInternTask
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -891,7 +891,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: Otsimo Game Dev Intern Task
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Otsimo Game Dev Intern Task
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
