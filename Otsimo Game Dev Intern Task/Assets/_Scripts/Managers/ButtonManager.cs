@@ -32,9 +32,7 @@ public class ButtonManager : MonoBehaviour
     public static Action onAnyMenuOpened;
     public static Action onAllMenusClosed;
 
-    [SerializeField] gameData gameData;
     [SerializeField] LineGenerator lineGenerator;
-    //[SerializeField] Transform canvasItemHolder;
     [SerializeField] GameObject canvasPlane;
     [SerializeField] Camera mainCam;
 
@@ -61,9 +59,10 @@ public class ButtonManager : MonoBehaviour
 
     private void Start()
     {
+        SaveManager.instance.LoadDrawnData();
         fade_img.DOFade(0f, 3f).OnComplete(() =>
         {
-            if (!gameData.hasDrawn)
+            if (!GameManager.instance.hasDrawn)
             {
                 fade_img.gameObject.SetActive(false);
                 greet_text.gameObject.SetActive(false);
@@ -191,6 +190,12 @@ public class ButtonManager : MonoBehaviour
 
     public void P_Button_SaveCanvas()
     {
+        saveCanvasButton.interactable = false;
+        saveCanvasButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
+        {
+            saveCanvasButton.interactable = true;
+        });
+
         SaveManager.instance.SaveCurrentCanvas();
     }
 
@@ -242,7 +247,7 @@ public class ButtonManager : MonoBehaviour
     #region Menu Canvas Button Functions
     void M_Button_NewCanvasButton()
     {
-        gameData.hasDrawn = true;
+        GameManager.instance.hasDrawn = true;
         fade_img.gameObject.SetActive(true);
         fade_img.DOFade(1f, .5f).OnComplete(() =>
         {

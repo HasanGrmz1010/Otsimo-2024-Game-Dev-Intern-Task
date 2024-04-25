@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    [SerializeField] gameData gameData;
+    public bool hasDrawn;
 
     public int canvasLayerCounter;
     public enum State
@@ -46,23 +46,9 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        if (gameData.hasDrawn)
+        if (hasDrawn)
         {
-            for (int i = 0; i < gameData.lineVerticePairs.Count; i++)
-            {
-                foreach (Vector3 item in gameData.lineVerticePairs[i])
-                {
-                    print(item.x + " " + item.y + " " + item.z + "\n");
-                }
-            }
-            print("======================================================");
-            for (int i = 0; i < gameData.eraserVerticePairs.Count; i++)
-            {
-                foreach (Vector3 item in gameData.eraserVerticePairs[i])
-                {
-                    print(item.x + " " + item.y + " " + item.z + "\n");
-                }
-            }
+            SaveManager.instance.SaveCurrentCanvas();
         }
     }
 }
