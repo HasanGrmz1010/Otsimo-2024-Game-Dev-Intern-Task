@@ -44,9 +44,9 @@ public class GameManager : MonoBehaviour
         canvasLayerCounter = 1;
     }
 
-    private void OnApplicationQuit()
+    private void OnApplicationPause(bool pause)
     {
-        if (hasDrawn)
+        if (pause)
         {
             SaveManager.instance.SaveCurrentCanvas();
         }

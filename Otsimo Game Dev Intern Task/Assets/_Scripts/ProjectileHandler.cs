@@ -38,8 +38,8 @@ public class ProjectileHandler : MonoBehaviour
                         if (hit.collider.CompareTag("CanvasPlane") && canShoot)
                         {
                             transform.LookAt(hit.point);
-
                             ObjectPooling.instance.TakeFromPool(transform.position, Quaternion.identity, hit.point);
+                            SoundManager.instance.PlayMisc_SFX("gun_pop");
                         }
                     }
                     

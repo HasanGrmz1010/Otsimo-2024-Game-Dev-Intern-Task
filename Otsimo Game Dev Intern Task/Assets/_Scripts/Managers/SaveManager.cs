@@ -65,47 +65,59 @@ public class SaveManager : MonoBehaviour
         {
             if (item.CompareTag("line_pen"))// Pen Line Found
             {
-                LineRenderer this_lr = item.GetComponent<LineRenderer>();
-                lineSortingOrders.Add(this_lr.sortingOrder);
-                lineColors.Add(this_lr.material.color);
-
-                List<Vector3> vertices = new List<Vector3>();
-                int vert_count = this_lr.positionCount;
-                for (int i = 0; i < vert_count; i++)
+                if (!lineVerticesPair.ContainsKey(c1))
                 {
-                    vertices.Add(this_lr.GetPosition(i));
+                    LineRenderer this_lr = item.GetComponent<LineRenderer>();
+                    lineSortingOrders.Add(this_lr.sortingOrder);
+                    lineColors.Add(this_lr.material.color);
+
+                    List<Vector3> vertices = new List<Vector3>();
+                    int vert_count = this_lr.positionCount;
+                    for (int i = 0; i < vert_count; i++)
+                    {
+                        vertices.Add(this_lr.GetPosition(i));
+                    }
+                    lineVerticesPair.Add(c1, vertices);
+                    c1++;
                 }
-                lineVerticesPair.Add(c1, vertices);
-                c1++;
             }
 
             else if (item.CompareTag("line_eraser"))// Eraser Line Found
             {
-                LineRenderer this_lr = item.GetComponent<LineRenderer>();
-                eraserSortingOrders.Add(this_lr.sortingOrder);
-
-                List<Vector3> vertices = new List<Vector3>();
-                int vert_count = this_lr.positionCount;
-                for (int i = 0; i < vert_count; i++)
+                if (!eraserVerticesPair.ContainsKey(c2))
                 {
-                    vertices.Add(this_lr.GetPosition(i));
+                    LineRenderer this_lr = item.GetComponent<LineRenderer>();
+                    eraserSortingOrders.Add(this_lr.sortingOrder);
+
+                    List<Vector3> vertices = new List<Vector3>();
+                    int vert_count = this_lr.positionCount;
+                    for (int i = 0; i < vert_count; i++)
+                    {
+                        vertices.Add(this_lr.GetPosition(i));
+                    }
+                    eraserVerticesPair.Add(c2, vertices);
+                    c2++;
                 }
-                eraserVerticesPair.Add(c2, vertices);
-                c2++;
             }
 
             else if (item.CompareTag("stamp"))
             {
-                stampPositions.Add(item.localPosition);
-                stampSortingOrders.Add(item.GetComponent<SpriteRenderer>().sortingOrder);
+                if (!stampPositions.Contains(item.localPosition))
+                {
+                    stampPositions.Add(item.localPosition);
+                    stampSortingOrders.Add(item.GetComponent<SpriteRenderer>().sortingOrder);
+                }
             }
 
             else if (item.CompareTag("splash"))
             {
-                _splashSortingOrders.Add(item.GetComponent<SpriteRenderer>().sortingOrder);
-                Color _thisColor = item.GetComponent<SpriteRenderer>().color;
-                _splashColors.Add(_thisColor);
-                _splashPositions.Add(item.localPosition);
+                if (!_splashPositions.Contains(item.localPosition))
+                {
+                    _splashSortingOrders.Add(item.GetComponent<SpriteRenderer>().sortingOrder);
+                    Color _thisColor = item.GetComponent<SpriteRenderer>().color;
+                    _splashColors.Add(_thisColor);
+                    _splashPositions.Add(item.localPosition);
+                }
             }
         }
         #endregion

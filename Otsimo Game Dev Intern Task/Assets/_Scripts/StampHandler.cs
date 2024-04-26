@@ -32,6 +32,7 @@ public class StampHandler : MonoBehaviour
                         int layer = GameManager.instance.canvasLayerCounter++;
                         newSprite.GetComponent<SpriteRenderer>().sortingOrder = layer;
                         newSprite.transform.DOPunchScale(Vector3.one / 10, .2f, 1, .25f);
+                        SoundManager.instance.PlayPainting_SFX("stamp");
                     }
                     break;
 

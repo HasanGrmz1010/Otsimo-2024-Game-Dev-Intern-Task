@@ -154,7 +154,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineGenerator: {fileID: 2003504417}
   canvasPlane: {fileID: 1597850434}
-  data: {fileID: 11400000, guid: 96d5c7e1e5506784aacff8d48b6c71b4, type: 2}
   mainCam: {fileID: 963194227}
   tool_images:
   - {fileID: 21300000, guid: 0c6872c6f590579498e49654248b9e50, type: 3}
@@ -2737,7 +2736,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.25
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -2867,6 +2866,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0cc7b5a7b5a56a428a6d21e7b3cc46f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UI_Source: {fileID: 659426099}
+  PaintSource: {fileID: 1099936464}
+  Misc_Source: {fileID: 715375026}
+  UI_soundClips:
+  - {fileID: 8300000, guid: 8e5919aeaef906441a3322f6e88af4d0, type: 3}
+  - {fileID: 8300000, guid: 8ed836f2543c5744ea1b7c40267306a1, type: 3}
+  - {fileID: 8300000, guid: cade6f5883da19b49aba760c954f205c, type: 3}
+  Gun_soundClips:
+  - {fileID: 8300000, guid: e86c00f2a170788448dca95f5ddf5afb, type: 3}
+  - {fileID: 8300000, guid: f02c0c6bd8b3b6e42b9d5297fc1f5c0e, type: 3}
+  Paint_soundClips:
+  - {fileID: 8300000, guid: dc6fface8f780294ebe64f9a248671b6, type: 3}
+  - {fileID: 8300000, guid: 5727159b18ce7c04182b91e037002d75, type: 3}
+  - {fileID: 8300000, guid: 586df3ec48d2ee34ba4008c078baeb1f, type: 3}
 --- !u!1 &1150522023
 GameObject:
   m_ObjectHideFlags: 0
@@ -3403,7 +3416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blankMat: {fileID: 2100000, guid: 22724d1f11dfa5e4f8fb08797602c210, type: 2}
-  data: {fileID: 11400000, guid: 96d5c7e1e5506784aacff8d48b6c71b4, type: 2}
   PenLine: {fileID: 6484964446807099042, guid: dff88dc5c364bce44bb7bd8ae3082877, type: 3}
   EraserLine: {fileID: 6484964446807099042, guid: 417cc25ffc15c8148b26fab07fe0a749, type: 3}
   Stamp: {fileID: 6709902580460100975, guid: d3145e23f18344544af5ac17fa6feee8, type: 3}

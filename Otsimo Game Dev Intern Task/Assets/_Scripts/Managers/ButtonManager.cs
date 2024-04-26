@@ -101,6 +101,7 @@ public class ButtonManager : MonoBehaviour
         switch (toolMenu_status)
         {
             case true: // CLOSE THE MENU
+                SoundManager.instance.PlayUI_SFX("button_paint");
                 temp_offset = 240;
                 var close_seq = DOTween.Sequence();
                 foreach (RectTransform button in toolButtons)
@@ -117,6 +118,7 @@ public class ButtonManager : MonoBehaviour
                 break;
 
             case false: // OPEN THE MENU
+                SoundManager.instance.PlayUI_SFX("button_paint");
                 temp_offset = 240;
                 var open_seq = DOTween.Sequence();
                 foreach (RectTransform button in toolButtons)
@@ -137,6 +139,7 @@ public class ButtonManager : MonoBehaviour
     {
         if ((GameManager.instance.mode == GameManager.Mode.pen || GameManager.instance.mode == GameManager.Mode.bucket || GameManager.instance.mode == GameManager.Mode.projectile))
         {
+            SoundManager.instance.PlayUI_SFX("button_paint");
             colorWheelButton.interactable = false;
             colorWheelButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
             {
@@ -179,17 +182,28 @@ public class ButtonManager : MonoBehaviour
             if (!toolMenu_status && !colorWheel_status)
                 onAllMenusClosed();
         });
-        foreach (Transform item in SaveManager.instance.canvasItemHolder.transform)
+
+        if (SaveManager.instance.canvasItemHolder.transform.childCount > 0 ||
+            canvasPlane.GetComponent<MeshRenderer>().material.color != Color.white)
         {
-            Destroy(item.gameObject);
+            foreach (Transform item in SaveManager.instance.canvasItemHolder.transform)
+            {
+                Destroy(item.gameObject);
+            }
+            canvasPlane.GetComponent<MeshRenderer>().material.color = Color.white;
+            GameManager.instance.canvasLayerCounter = 1;
+            SoundManager.instance.PlayPainting_SFX("eraser");
+            lineGenerator.SetLineGenerating(true);
         }
-        canvasPlane.GetComponent<MeshRenderer>().material.color = Color.white;
-        GameManager.instance.canvasLayerCounter = 1;
-        lineGenerator.SetLineGenerating(true);
+        else
+        {
+            SoundManager.instance.PlayUI_SFX("button_paint");
+        }
     }
 
     public void P_Button_SaveCanvas()
     {
+        SoundManager.instance.PlayUI_SFX("button_paint");
         saveCanvasButton.interactable = false;
         saveCanvasButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
         {
@@ -197,10 +211,18 @@ public class ButtonManager : MonoBehaviour
         });
 
         SaveManager.instance.SaveCurrentCanvas();
+        SoundManager.instance.PlayPainting_SFX("saving");
     }
 
     public void P_Button_Projectile()
     {
+        SoundManager.instance.PlayUI_SFX("button_paint");
+
+        projectileButton.interactable = false;
+        projectileButton.transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f).OnComplete(() =>
+        {
+            projectileButton.interactable = true;
+        });
         GameManager.instance.mode = GameManager.Mode.projectile;
         if (!toolMenu_status && !colorWheel_status) onAllMenusClosed();
     }
@@ -211,6 +233,7 @@ public class ButtonManager : MonoBehaviour
         switch (_tag)
         {
             case "pen":
+                SoundManager.instance.PlayUI_SFX("button_tool");
                 currentClickedObj = EventSystem.current.currentSelectedGameObject;
                 currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[0];
@@ -218,6 +241,7 @@ public class ButtonManager : MonoBehaviour
                 break;
 
             case "bucket":
+                SoundManager.instance.PlayUI_SFX("button_tool");
                 currentClickedObj = EventSystem.current.currentSelectedGameObject;
                 currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[1];
@@ -225,6 +249,7 @@ public class ButtonManager : MonoBehaviour
                 break;
 
             case "stamp":
+                SoundManager.instance.PlayUI_SFX("button_tool");
                 currentClickedObj = EventSystem.current.currentSelectedGameObject;
                 currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[2];
@@ -232,6 +257,7 @@ public class ButtonManager : MonoBehaviour
                 break;
 
             case "eraser":
+                SoundManager.instance.PlayUI_SFX("button_tool");
                 currentClickedObj = EventSystem.current.currentSelectedGameObject;
                 currentClickedObj.GetComponent<Button>().transform.DOPunchScale(Vector3.one / 5f, .2f, 1, .25f);
                 currentTool_img.sprite = tool_images[3];
@@ -247,6 +273,7 @@ public class ButtonManager : MonoBehaviour
     #region Menu Canvas Button Functions
     void M_Button_NewCanvasButton()
     {
+        SoundManager.instance.PlayUI_SFX("button_menu");
         GameManager.instance.hasDrawn = true;
         fade_img.gameObject.SetActive(true);
         fade_img.DOFade(1f, .5f).OnComplete(() =>
@@ -258,6 +285,7 @@ public class ButtonManager : MonoBehaviour
             {
                 fade_img.gameObject.SetActive(false);
                 GameManager.instance.state = GameManager.State.paint;
+                SaveManager.instance.SaveCurrentCanvas();
             });
         });
         
@@ -265,6 +293,7 @@ public class ButtonManager : MonoBehaviour
 
     void M_ExitGameButton()
     {
+        SoundManager.instance.PlayUI_SFX("button_menu");
         Application.Quit();
     }
     #endregion

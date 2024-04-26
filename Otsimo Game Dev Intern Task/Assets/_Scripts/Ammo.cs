@@ -44,6 +44,7 @@ public class Ammo : MonoBehaviour
             _splash.transform.localScale = new Vector3(_scale, _scale, 1f);
             _splash.transform.Rotate(0, 0, Random.Range(0f, 360f));
 
+            SoundManager.instance.PlayMisc_SFX("ammo_pop");
             mainCam.DOShakePosition(.1f, .25f, 10, 90f, true, ShakeRandomnessMode.Harmonic);
             ObjectPooling.instance.AddToAmmoPool(gameObject);
         }
